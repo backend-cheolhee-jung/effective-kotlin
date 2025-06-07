@@ -85,3 +85,28 @@ class User(
     var token by ChangeValueLogger(token)
 }
 ```
+
+마지막으로 `vetoable`을 사용해서 property의 값을 검증하는 예시이다.
+
+```kotlin
+import kotlin.properties.Delegates
+
+class User(
+    val email: String,
+    val name: String,
+    age: Int = 0,
+) {
+    var age: Int by Delegates.vetoable(0) { _, oldValue, newValue ->
+        if (newValue < 0) {
+            false // 변경을 거부
+        } else {
+            true // 변경을 허용
+        }
+    }
+}
+```
+
+vetoable은 property의 값을 변경할 때마다 검증을 수행한다.  
+init block을 사용해도 되지만 init block 안에 검증해야할 로직이 많을 경우 vetoable을 사용해서 검증해도 된다.  
+그런데 vetoable에서 false를 반환하면 error가 발생하지 않고, 단순히 값이 변경되지 않는다.  
+이러한 점을 주의해서 사용해야 한다.  
